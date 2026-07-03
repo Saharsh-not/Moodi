@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "363372353047",
-    "project_id": "moodi-c7b69",
-    "storage_bucket": "moodi-c7b69.firebasestorage.app"
+    "project_number": "368577426478",
+    "project_id": "moodi-bb6b5",
+    "storage_bucket": "moodi-bb6b5.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:363372353047:android:28d82cca55b7883e2cae52",
+        "mobilesdk_app_id": "1:368577426478:android:5fccf464f191444eb9dbbf",
         "android_client_info": {
           "package_name": "com.example.moodi"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCviDqDPyxA9F5B_ealfGk1QJWjzYC2Ha8"
+          "current_key": "AIzaSyD2hImP2WWOihEuAMTfucAlUsSrr4LVK3g"
         }
       ],
       "services": {

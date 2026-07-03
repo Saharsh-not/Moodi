@@ -54,7 +54,7 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.Cand
 
     @Override
     public void onBindViewHolder(@NonNull CandidateViewHolder holder, int position) {
-        Candidate candidate = candidateList[position];
+        Candidate candidate = candidateList.get(position);
 
         holder.name.setText(candidate.getName());
         holder.party.setText(candidate.getParty());
@@ -71,15 +71,17 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.Cand
 
             db.collection("users").document(userId).get()
                 .addOnSuccessListener(document -> {
-                    boolean hasVoted = document.getBoolean("hasVoted") != null && document.getBoolean("hasVoted");
+                    Boolean hasVotedObj = document.getBoolean("hasVoted");
+                    boolean hasVoted = hasVotedObj != null && hasVotedObj;
 
                     if (!hasVoted) {
                         db.runTransaction(transaction -> {
-                            var candidateRef = db.collection("candidates").document(candidate.getName());
-                            var userRef = db.collection("users").document(userId);
+                            com.google.firebase.firestore.DocumentReference candidateRef = db.collection("candidates").document(candidate.getName());
+                            com.google.firebase.firestore.DocumentReference userRef = db.collection("users").document(userId);
 
-                            var userSnapshot = transaction.get(userRef);
-                            boolean stillHasNotVoted = userSnapshot.getBoolean("hasVoted") != null && userSnapshot.getBoolean("hasVoted");
+                            com.google.firebase.firestore.DocumentSnapshot userSnapshot = transaction.get(userRef);
+                            Boolean stillHasNotVotedObj = userSnapshot.getBoolean("hasVoted");
+                            boolean stillHasNotVoted = stillHasNotVotedObj != null && stillHasNotVotedObj;
 
                             if (!stillHasNotVoted) {
                                 transaction.update(candidateRef, "votes", FieldValue.increment(1));
@@ -88,11 +90,9 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.Cand
                             } else {
                                 throw new RuntimeException("Already voted");
                             }
-                        }).addOnSuccessListener(aVoid -> {
-                            Toast.makeText(holder.itemView.getContext(), "Vote submitted for " + candidate.getName(), Toast.LENGTH_SHORT).show();
-                        }).addOnFailureListener(e -> {
+                        }).addOnSuccessListener(aVoid -> Toast.makeText(holder.itemView.getContext(), "Vote submitted for " + candidate.getName(), Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> {
                             holder.voteBtn.setEnabled(true);
-                            String msg = e.getMessage().equals("Already voted") ? "You have already cast your vote!" : "Error: " + e.getMessage();
+                            String msg = (e.getMessage() != null && e.getMessage().equals("Already voted")) ? "You have already cast your vote!" : "Error: " + e.getMessage();
                             Toast.makeText(holder.itemView.getContext(), msg, Toast.LENGTH_SHORT).show();
                         });
                     } else {
